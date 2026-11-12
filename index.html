@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enfoques de la TGS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0a1414; --ink:#eafaf3; --muted:#9bc4b6; --line:#1d3a36; --card:#0f201e;
+  --teal:#3ff0c2; --green:#64d98a; --amber:#ffbf47; --coral:#ff7a6b; --violet:#9b8cff;
+  --display:'Fraunces',Georgia,serif; --body:'Archivo',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:
+   radial-gradient(1100px 560px at 82% -6%, rgba(63,240,194,.15), transparent 62%),
+   radial-gradient(760px 480px at -5% 106%, rgba(255,191,71,.10), transparent 60%),
+   var(--bg); color:var(--ink); font-family:var(--body); line-height:1.55}
+#bio{position:fixed; inset:0; z-index:0; opacity:.9; pointer-events:none}
+a{color:var(--teal)}
+
+.shell{position:relative; z-index:1; max-width:860px; margin:0 auto; min-height:100%; display:flex; flex-direction:column; padding:0 16px}
+
+/* HUD */
+.hud{padding:18px 0 10px}
+.hud .row1{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.logo{font-family:var(--display); font-weight:700; font-size:1rem}
+.logo b{color:var(--teal)}
+.rank{margin-left:auto; font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); font-weight:600}
+.track{height:10px; background:#0c1e1c; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-top:12px}
+.fill{height:100%; width:0; background:linear-gradient(90deg,var(--teal),var(--amber)); transition:width .5s}
+.dots{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px}
+.dot{font-size:.68rem; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 9px; display:flex; gap:5px; align-items:center}
+.dot.on{color:var(--ink); border-color:var(--teal)}
+.dot.ok{color:var(--green); border-color:var(--green)}
+.dot .lk{opacity:.6}
+
+/* stage */
+.stage{flex:1; padding:14px 0 10px}
+.screen{display:none; animation:fade .4s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.screen.on{animation:none}}
+
+.eyebrow{font-weight:600; letter-spacing:.24em; text-transform:uppercase; font-size:.7rem; color:var(--teal)}
+h1{font-family:var(--display); font-weight:600; font-size:clamp(2rem,6.5vw,3.2rem); line-height:1.04; margin:.2em 0 .25em; text-wrap:balance; letter-spacing:-.01em}
+h1 em{font-style:italic; color:var(--amber)}
+h2{font-family:var(--display); font-weight:600; font-size:clamp(1.5rem,4.6vw,2.2rem); margin:.15em 0 .5em; text-wrap:balance}
+h3{font-size:1.06rem; margin:1.1em 0 .35em}
+p{max-width:64ch}
+.lead{font-size:1.12rem; color:#d6efe5}
+.meta{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:18px; color:var(--muted); font-size:.9rem}
+.meta b{color:var(--ink)}
+
+.cols2{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+@media(max-width:640px){.cols2{grid-template-columns:1fr}}
+.glass{background:linear-gradient(180deg, rgba(20,38,35,.6), rgba(12,24,22,.6)); border:1px solid var(--line); border-radius:14px; padding:18px}
+.glass .tag{font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.66rem}
+.glass.red .tag{color:var(--coral)} .glass.sis .tag{color:var(--teal)}
+.glass h3{margin:.3em 0 .35em; font-family:var(--display); font-weight:600; font-size:1.15rem}
+.glass p{color:var(--muted); font-size:.95rem; margin:0}
+.cite{color:var(--violet); font-size:.8rem; font-style:italic; margin-top:14px}
+
+.comp{margin-top:14px; border:1px solid var(--line); border-radius:14px; overflow:hidden; font-size:.95rem}
+.comp .r{display:grid; grid-template-columns:1fr 1fr}
+.comp .hd{padding:11px 14px; font-family:var(--display); font-weight:600; border-bottom:1px solid var(--line)}
+.comp .hd.a{background:rgba(255,122,107,.08); color:#ffd7cf}
+.comp .hd.b{background:rgba(63,240,194,.08); color:#c9fff0; border-left:1px solid var(--line)}
+.comp .c{padding:10px 14px; color:var(--muted)}
+.comp .c.b{border-left:1px solid var(--line)}
+.comp .r:not(:last-child) .c{border-bottom:1px solid var(--line)}
+
+.ex{display:flex; gap:12px; padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--card); margin-top:10px}
+.ex .ic{font-size:1.4rem; flex:none}
+.ex b{color:var(--ink)} .ex p{margin:.2em 0 0; color:var(--muted); font-size:.93rem}
+
+/* check / gate */
+.check{margin-top:18px; background:rgba(16,32,30,.7); border:1px solid var(--line); border-radius:14px; padding:18px}
+.check .lab{font-weight:600; letter-spacing:.18em; text-transform:uppercase; font-size:.66rem; color:var(--amber)}
+.check .q{font-size:1.06rem; font-weight:500; margin:.4em 0 .7em}
+.opts{display:flex; flex-direction:column; gap:9px}
+.opts button{text-align:left; font-family:var(--body); font-size:.98rem; color:var(--ink); background:#0c1e1c; border:1px solid var(--line); border-radius:11px; padding:12px 14px; cursor:pointer; transition:.14s}
+.opts button:hover{border-color:var(--teal); transform:translateX(3px)}
+.opts button.good{border-color:var(--green); background:rgba(100,217,138,.15)}
+.opts button.bad{border-color:var(--coral); background:rgba(255,122,107,.15)}
+.fb{min-height:22px; margin-top:10px; font-size:.92rem; color:var(--muted)}
+.fb.ok{color:var(--green)} .fb.no{color:var(--coral)}
+
+.panel{background:rgba(16,32,30,.7); border:1px solid var(--line); border-radius:14px; padding:18px; margin-top:12px}
+.qbig{min-height:56px; display:flex; align-items:center; justify-content:center; text-align:center; font-size:1.12rem; font-weight:500; color:#fff; background:#0a1c1a; border:1px dashed var(--line); border-radius:12px; padding:14px; margin:10px 0}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media(max-width:520px){.two{grid-template-columns:1fr}}
+.opt{font-weight:600; padding:14px; border-radius:11px; border:1px solid var(--line); color:var(--ink); background:#0c1e1c; cursor:pointer; transition:.14s}
+.opt:hover{transform:translateY(-2px); border-color:var(--teal)}
+.stat{display:flex; justify-content:space-between; align-items:center; margin-top:12px; color:var(--muted); font-size:.86rem}
+.stat b{color:var(--amber); font-family:var(--display)}
+
+.mem{display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:4px}
+@media(max-width:560px){.mem{grid-template-columns:repeat(2,1fr)}}
+.mcard{aspect-ratio:3/2.3; border-radius:11px; border:1px solid var(--line); background:#0c1e1c; cursor:pointer; display:flex; align-items:center; justify-content:center; text-align:center; padding:7px; font-size:.78rem; font-weight:600; color:transparent; user-select:none; transition:.15s}
+.mcard.flip{color:var(--ink); background:#12302c; border-color:var(--teal)}
+.mcard.done{color:var(--green); background:rgba(100,217,138,.12); border-color:var(--green); cursor:default}
+.mcard:not(.flip):not(.done)::after{content:"◆"; color:var(--line); font-size:1.2rem}
+
+.vids{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px}
+@media(max-width:640px){.vids{grid-template-columns:1fr}}
+.vid{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--card)}
+.vid .frame{position:relative; aspect-ratio:16/9; background:#0c1e1c}
+.vid .frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+.vid .cap{padding:10px 12px; color:var(--muted); font-size:.86rem}
+.vid .cap a{font-weight:600}
+
+.meter{display:flex; align-items:center; gap:12px; margin-top:14px}
+.meter .track{flex:1; margin:0}
+.pc{font-family:var(--display); font-weight:700; font-size:1.2rem; min-width:3.4ch; text-align:right}
+.result{margin-top:10px; font-weight:600; min-height:22px; color:var(--teal)}
+
+.refs{list-style:none; padding:0; margin:10px 0 0}
+.refs li{padding:9px 0; border-bottom:1px solid var(--line); color:var(--muted); font-size:.92rem}
+.refs b{color:var(--ink)}
+
+/* controls */
+.controls{position:sticky; bottom:0; z-index:2; background:linear-gradient(0deg, var(--bg) 60%, transparent); padding:14px 0 20px; display:flex; gap:10px; align-items:center}
+.btn{font-family:var(--body); font-weight:600; border:none; border-radius:11px; padding:13px 20px; cursor:pointer; font-size:1rem}
+.btn.next{background:var(--teal); color:#06211b; margin-left:auto}
+.btn.next:disabled{background:#143d35; color:#4f7a6f; cursor:not-allowed}
+.btn.back{background:transparent; color:var(--muted); border:1px solid var(--line)}
+.lockmsg{font-size:.82rem; color:var(--muted)}
+.lockmsg.go{color:var(--green)}
+</style>
+</head>
+<body>
+<canvas id="bio"></canvas>
+<div class="shell">
+
+  <div class="hud">
+    <div class="row1">
+      <span class="logo"><b>Red</b> Viva · TGS</span>
+      <span class="rank" id="rank">Rango · Cadete</span>
+    </div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="stage" id="stage">
+
+    <!-- 0 PORTADA -->
+    <section class="screen on" data-gate="start">
+      <div class="eyebrow">OVA · Teoría General de Sistemas</div>
+      <h1>Enfoques para <em>estudiar</em> un sistema</h1>
+      <p class="lead">Un mismo sistema se ve distinto según el lente que uses. Avanza módulo a módulo: cada uno se desbloquea cuando resuelves su reto.</p>
+      <div class="meta"><span><b>Tema 11</b> · Enfoques para el estudio de la TGS</span><span><b>Autor:</b> Brayan Alexis Jiménez Niño</span><span><b>Universidad Simón Bolívar</b></span></div>
+      <p style="margin-top:18px; color:var(--muted)">Pulsa <b style="color:var(--ink)">Comenzar</b> para iniciar el recorrido.</p>
+    </section>
+
+    <!-- 1 REDUCCIONISTA -->
+    <section class="screen" data-gate="check" data-ans="1">
+      <div class="eyebrow">Módulo 1</div>
+      <h2>El enfoque reduccionista</h2>
+      <p>Un <b>enfoque</b> es la forma de aproximarse a un sistema. El <b>reduccionista</b> (o analítico) viene de Descartes y Newton: para entender el todo, lo <b>descompones en partes</b> y estudias cada una por separado. El todo se explica como la <b>suma</b> de sus componentes.</p>
+      <div class="glass red" style="margin-top:14px"><div class="tag">Idea clave</div><h3>Dividir para entender</h3><p>Fortaleza: precisión y detalle. Límite: pierde de vista las relaciones y lo que emerge del conjunto.</p></div>
+      <p class="cite">Raíz: Descartes, «Discurso del método» (1637).</p>
+      <div class="check">
+        <div class="lab">Comprobación · resuelve para avanzar</div>
+        <div class="q">"Para arreglar el reloj, lo desarmo y reviso cada engranaje por separado." ¿Qué enfoque es?</div>
+        <div class="opts">
+          <button>Sistémico</button>
+          <button>Reduccionista</button>
+          <button>Holístico</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+    </section>
+
+    <!-- 2 SISTÉMICO -->
+    <section class="screen" data-gate="check" data-ans="0">
+      <div class="eyebrow">Módulo 2</div>
+      <h2>El enfoque sistémico</h2>
+      <p>Propuesto por <b>Ludwig von Bertalanffy</b> con la Teoría General de Sistemas: el sistema se estudia como un <b>todo organizado</b>. Lo esencial son las <b>relaciones</b>, la organización y las propiedades que <b>emergen</b> del conjunto.</p>
+      <div class="glass sis" style="margin-top:14px"><div class="tag">Principio</div><h3>El todo es más que la suma de las partes</h3><p>Conceptos clave: sinergia, emergencia y totalidad. Importa el conjunto, no solo las piezas.</p></div>
+      <p class="cite">Raíz: Bertalanffy, «Teoría General de los Sistemas» (1968).</p>
+      <div class="check">
+        <div class="lab">Comprobación · resuelve para avanzar</div>
+        <div class="q">"El equipo rinde por cómo se relacionan y comunican sus miembros." ¿Qué enfoque es?</div>
+        <div class="opts">
+          <button>Sistémico</button>
+          <button>Reduccionista</button>
+          <button>Mecanicista</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+    </section>
+
+    <!-- 3 ANÁLISIS VS SÍNTESIS -->
+    <section class="screen" data-gate="check" data-ans="1">
+      <div class="eyebrow">Módulo 3</div>
+      <h2>Análisis vs. síntesis</h2>
+      <p><b>Russell Ackoff</b> resumió el cambio de época: el <b>análisis</b> toma algo aparte para explicar <em>cómo funciona</em>; la <b>síntesis</b> lo pone en su contexto para entender <em>por qué</em> hace lo que hace. Pasamos de la «Era de la Máquina» (analizar) a la «Era de los Sistemas» (sintetizar).</p>
+      <div class="comp">
+        <div class="r"><div class="hd a">Reduccionista / Analítico</div><div class="hd b">Sistémico / Holístico</div></div>
+        <div class="r"><div class="c">Del todo hacia las partes.</div><div class="c b">De las partes hacia el todo.</div></div>
+        <div class="r"><div class="c">Explica por los componentes.</div><div class="c b">Explica por las relaciones.</div></div>
+        <div class="r"><div class="c">El todo = suma de partes.</div><div class="c b">El todo es más que la suma.</div></div>
+      </div>
+      <div class="check">
+        <div class="lab">Comprobación · resuelve para avanzar</div>
+        <div class="q">Para Ackoff, poner algo en su contexto para entender <em>por qué</em> hace lo que hace es…</div>
+        <div class="opts">
+          <button>Análisis</button>
+          <button>Síntesis</button>
+          <button>Reducción</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+    </section>
+
+    <!-- 4 EJEMPLOS -->
+    <section class="screen" data-gate="check" data-ans="1">
+      <div class="eyebrow">Módulo 4</div>
+      <h2>El mismo caso, dos lentes</h2>
+      <div class="ex"><div class="ic">🏥</div><div><b>Salud.</b><p>Reduccionista: tratar solo el órgano enfermo. Sistémico: la medicina familiar mira al paciente completo, su entorno y hábitos.</p></div></div>
+      <div class="ex"><div class="ic">🏢</div><div><b>Empresa.</b><p>Reduccionista: optimizar cada área por separado. Sistémico: si ventas promete lo que producción no cumple, el todo falla.</p></div></div>
+      <div class="ex"><div class="ic">💻</div><div><b>Software.</b><p>Reduccionista: módulos aislados y perfectos. Sistémico: la arquitectura y cómo se integran; puede tener partes buenas y fallar como conjunto.</p></div></div>
+      <div class="check">
+        <div class="lab">Comprobación · resuelve para avanzar</div>
+        <div class="q">Optimizar cada área de una empresa por separado, sin ver el conjunto, es un enfoque…</div>
+        <div class="opts">
+          <button>Sistémico</button>
+          <button>Reduccionista</button>
+          <button>Holístico</button>
+        </div>
+        <div class="fb"></div>
+      </div>
+    </section>
+
+    <!-- 5 JUEGO 1 -->
+    <section class="screen" data-gate="g1">
+      <div class="eyebrow">Módulo 5 · Juego</div>
+      <h2>Clasificador rápido</h2>
+      <p>Clasifica cada frase en su enfoque. Termina las 6 rondas para desbloquear el siguiente módulo.</p>
+      <div class="panel">
+        <div class="qbig" id="g1Q">Pulsa «Jugar» para empezar.</div>
+        <div class="two">
+          <button class="opt" id="g1Red" disabled>Reduccionista</button>
+          <button class="opt" id="g1Sis" disabled>Sistémico</button>
+        </div>
+        <div class="fb" id="g1Fb"></div>
+        <div class="stat"><span id="g1Prog">Ronda 0 / 6</span><span>Puntos <b id="g1Pts">0</b></span><button class="btn" style="padding:9px 15px" id="g1Start">Jugar</button></div>
+      </div>
+    </section>
+
+    <!-- 6 JUEGO 2 -->
+    <section class="screen" data-gate="mem">
+      <div class="eyebrow">Módulo 6 · Juego</div>
+      <h2>Memoria de conceptos</h2>
+      <p>Empareja cada <b>concepto</b> con su <b>significado</b>. Encuentra los 4 pares para avanzar.</p>
+      <div class="panel">
+        <div class="mem" id="mem"></div>
+        <div class="stat"><span id="memProg">Pares: 0 / 4</span><span>Intentos <b id="memTries">0</b></span><button class="btn" style="padding:9px 15px; background:transparent; color:var(--teal); border:1px solid var(--line)" id="memReset">Reiniciar</button></div>
+      </div>
+    </section>
+
+    <!-- 7 VIDEOS -->
+    <section class="screen" data-gate="videos">
+      <div class="eyebrow">Módulo 7 · Videos</div>
+      <h2>Míralo en movimiento</h2>
+      <div class="vids">
+        <div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/QbBy20GPlqc" title="TGS resumen" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div><div class="cap">TGS (Bertalanffy) · resumen animado. <a href="https://youtu.be/QbBy20GPlqc" target="_blank" rel="noopener">Ver en YouTube ↗</a></div></div>
+        <div class="vid"><div class="frame"><iframe src="https://www.youtube.com/embed/09pB3siSBBQ" title="Ejemplos enfoque sistémico" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div><div class="cap">Ejemplos de enfoque sistémico · Ing. de Sistemas. <a href="https://youtu.be/09pB3siSBBQ" target="_blank" rel="noopener">Ver en YouTube ↗</a></div></div>
+      </div>
+      <div class="panel" style="margin-top:14px; text-align:center">
+        <p style="margin:0 0 10px; color:var(--muted)">Cuando termines de ver los videos, confirma para continuar.</p>
+        <button class="btn" id="vidOk" style="padding:11px 20px">Ya vi los videos ✓</button>
+      </div>
+    </section>
+
+    <!-- 8 QUIZ -->
+    <section class="screen" data-gate="quiz">
+      <div class="eyebrow">Módulo 8 · Evaluación</div>
+      <h2>Quiz con puntaje automático</h2>
+      <p>5 preguntas. Complétalo para llegar a los créditos.</p>
+      <div class="panel">
+        <div id="qbox"></div>
+        <div class="meter"><div class="track"><div class="fill" id="qFill" style="background:linear-gradient(90deg,var(--teal),var(--amber))"></div></div><div class="pc" id="qPc">0</div></div>
+        <div class="result" id="qResult"></div>
+      </div>
+    </section>
+
+    <!-- 9 CRÉDITOS -->
+    <section class="screen" data-gate="end">
+      <div class="eyebrow">Fin del recorrido</div>
+      <h2>Créditos y referencias</h2>
+      <div class="cols2">
+        <div class="glass"><div class="tag" style="color:var(--teal)">Autoría</div><h3>Brayan Alexis Jiménez Niño</h3><p>Tema 11 · Enfoques para el estudio de la TGS. Teoría General de Sistemas · Ing. de Sistemas · Universidad Simón Bolívar · 2026-2.</p></div>
+        <div class="glass"><div class="tag" style="color:var(--amber)">Herramientas</div><h3>Declaración de IA</h3><p>Desarrollo web (HTML, CSS, JS, 3D con Three.js) con asistencia de IA (Claude). El contenido fue estudiado y comprendido por el autor para su sustentación.</p></div>
+      </div>
+      <h3>Referencias bibliográficas</h3>
+      <ul class="refs">
+        <li><b>Bertalanffy, L. von (1968).</b> Teoría General de los Sistemas. Fondo de Cultura Económica.</li>
+        <li><b>Ackoff, R. L. (1981).</b> Creating the Corporate Future. Wiley.</li>
+        <li><b>Johansen Bertoglio, O. (1982).</b> Introducción a la Teoría General de Sistemas. Limusa.</li>
+        <li><b>Meadows, D. (2008).</b> Thinking in Systems: A Primer. Chelsea Green.</li>
+        <li><b>Descartes, R. (1637).</b> Discurso del método.</li>
+      </ul>
+      <p style="margin-top:16px; color:var(--green); font-weight:600">🎉 ¡Completaste la OVA! Rango alcanzado: Analista de Sistemas.</p>
+    </section>
+
+  </div>
+
+  <div class="controls">
+    <button class="btn back" id="back" style="visibility:hidden">← Atrás</button>
+    <span class="lockmsg" id="lockmsg"></span>
+    <button class="btn next" id="next" disabled>Comenzar →</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* Fondo 3D */
+(function(){ if(!window.THREE) return;
+  const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,100); cam.position.z=30;
+  const r=new THREE.WebGLRenderer({canvas:document.getElementById('bio'),antialias:true,alpha:true});
+  r.setPixelRatio(Math.min(window.devicePixelRatio||1,2)); r.setSize(innerWidth,innerHeight);
+  const N=1400,g=new THREE.BufferGeometry(),pos=new Float32Array(N*3),dir=[];
+  for(let i=0;i<N;i++){const t=Math.random()*6.28,p=Math.acos(2*Math.random()-1),x=Math.sin(p)*Math.cos(t),y=Math.sin(p)*Math.sin(t),z=Math.cos(p);pos[i*3]=x*12;pos[i*3+1]=y*12;pos[i*3+2]=z*12;dir.push(new THREE.Vector3(x,y,z));}
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const sp=new THREE.Points(g,new THREE.PointsMaterial({size:.17,color:0x3ff0c2,transparent:true,opacity:.95})); sc.add(sp);
+  const red=matchMedia('(prefers-reduced-motion:reduce)').matches; let t=0;
+  (function loop(){t+=.01;const a=g.attributes.position.array,pl=1+Math.sin(t)*.06;for(let i=0;i<N;i++){const s=12*pl*(1+Math.sin(t*2+i)*.015);a[i*3]=dir[i].x*s;a[i*3+1]=dir[i].y*s;a[i*3+2]=dir[i].z*s;}g.attributes.position.needsUpdate=true;sp.rotation.y=t*.22;sp.rotation.x=Math.sin(t*.3)*.2;r.render(sc,cam);if(!red)requestAnimationFrame(loop);})();
+  addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight);});
+})();
+
+/* Motor de pasos con bloqueo */
+const screens=[...document.querySelectorAll('.screen')];
+const N=screens.length;
+const done=new Array(N).fill(false);
+done[0]=true; // la portada no requiere reto
+let cur=0;
+const fill=document.getElementById('fill'), dotsEl=document.getElementById('dots'),
+      back=document.getElementById('back'), next=document.getElementById('next'),
+      lockmsg=document.getElementById('lockmsg'), rank=document.getElementById('rank');
+const ranks=["Cadete","Cadete","Aprendiz","Aprendiz","Explorador","Explorador","Táctico","Táctico","Analista","Analista"];
+const labels=["Inicio","Reduccionista","Sistémico","Análisis/Síntesis","Ejemplos","Juego 1","Juego 2","Videos","Quiz","Créditos"];
+
+labels.forEach((l,i)=>{const d=document.createElement('span');d.className="dot";d.innerHTML='<span class="lk">'+(i===0?"●":"🔒")+'</span>'+l;dotsEl.appendChild(d);});
+const dotEls=[...dotsEl.children];
+
+function render(){
+  screens.forEach((s,i)=>s.classList.toggle('on',i===cur));
+  fill.style.width=Math.round((cur)/(N-1)*100)+"%";
+  rank.textContent="Rango · "+ranks[cur];
+  dotEls.forEach((d,i)=>{d.classList.toggle('on',i===cur);d.classList.toggle('ok',done[i]&&i!==cur);
+    d.querySelector('.lk').textContent = done[i]? "✓" : (i===cur? "●":"🔒");});
+  back.style.visibility = cur>0 ? "visible":"hidden";
+  next.textContent = cur===0 ? "Comenzar →" : (cur===N-1 ? "Reiniciar ↺" : "Siguiente →");
+  const gate=screens[cur].dataset.gate;
+  if(cur===N-1){ next.disabled=false; lockmsg.textContent=""; }
+  else if(done[cur]){ next.disabled=false; lockmsg.className="lockmsg go"; lockmsg.textContent="✓ Desbloqueado"; }
+  else { next.disabled=true; lockmsg.className="lockmsg"; lockmsg.textContent="🔒 Resuelve el reto para continuar"; }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function markDone(i){ done[i]=true; if(i===cur) render(); }
+next.onclick=()=>{ if(cur===N-1){ location.reload(); return; } if(!done[cur]) return; if(cur<N-1){cur++; render();} };
+back.onclick=()=>{ if(cur>0){cur--; render();} };
+
+/* Checks (módulos 1-4) */
+screens.forEach((s,i)=>{
+  if(s.dataset.gate!=="check") return;
+  const ans=+s.dataset.ans, btns=[...s.querySelectorAll('.opts button')], fb=s.querySelector('.fb');
+  btns.forEach((b,k)=>b.onclick=()=>{
+    if(done[i]) return;
+    if(k===ans){ b.classList.add('good'); fb.className="fb ok"; fb.textContent="✔ ¡Correcto! Módulo desbloqueado."; btns.forEach(x=>x.disabled=true); markDone(i); }
+    else { b.classList.add('bad'); fb.className="fb no"; fb.textContent="✘ No es esa. Inténtalo otra vez."; setTimeout(()=>b.classList.remove('bad'),700); }
+  });
+});
+
+/* Datos */
+const FRASES=[
+  {t:"Para arreglar el reloj, lo desarmo y reviso cada engranaje.",a:"red"},
+  {t:"El equipo rinde por cómo se relacionan sus miembros.",a:"sis"},
+  {t:"Explico el cuerpo estudiando solo la célula.",a:"red"},
+  {t:"Una ciudad se entiende viendo tráfico, economía y gente como un todo.",a:"sis"},
+  {t:"Optimizo cada área de la empresa por separado.",a:"red"},
+  {t:"La propiedad emergente aparece solo cuando todo funciona junto.",a:"sis"}
+];
+const IDX=screens.findIndex(s=>s.dataset.gate==="g1");
+
+/* Juego 1 */
+(function(){
+  let i=0,pts=0,on=false;
+  const Q=document.getElementById('g1Q'),R=document.getElementById('g1Red'),S=document.getElementById('g1Sis'),
+        F=document.getElementById('g1Fb'),P=document.getElementById('g1Prog'),PT=document.getElementById('g1Pts'),B=document.getElementById('g1Start');
+  function show(){ if(i>=FRASES.length){Q.textContent="¡Fin! Puntaje "+pts+" / "+FRASES.length;R.disabled=S.disabled=true;B.textContent="Repetir";B.disabled=false;on=false;markDone(IDX);return;}
+    Q.textContent='“'+FRASES[i].t+'”';P.textContent="Ronda "+(i+1)+" / "+FRASES.length; }
+  function ans(c){ if(!on)return; const ok=c===FRASES[i].a; if(ok){pts++;F.className="fb ok";F.textContent="✔ ¡Bien!";}else{F.className="fb no";F.textContent="✘ Era "+(FRASES[i].a==="red"?"Reduccionista":"Sistémico");} PT.textContent=pts;i++; setTimeout(()=>{F.textContent="";F.className="fb";show();},550); }
+  B.onclick=()=>{i=0;pts=0;PT.textContent="0";on=true;R.disabled=S.disabled=false;B.disabled=true;show();};
+  R.onclick=()=>ans("red"); S.onclick=()=>ans("sis");
+})();
+
+/* Juego 2 memoria */
+const MIDX=screens.findIndex(s=>s.dataset.gate==="mem");
+(function(){
+  const pairs=[["Análisis","Descomponer en partes"],["Síntesis","Integrar en el contexto"],["Reduccionismo","El todo = suma de partes"],["Emergencia","El todo es más que las partes"]];
+  const mem=document.getElementById('mem'),prog=document.getElementById('memProg'),tries=document.getElementById('memTries'),reset=document.getElementById('memReset');
+  let first=null,lock=false,found=0,nt=0;
+  function build(){ let deck=[]; pairs.forEach((p,idx)=>{deck.push({id:idx,txt:p[0]});deck.push({id:idx,txt:p[1]});});
+    for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+    first=null;lock=false;found=0;nt=0;tries.textContent="0";prog.textContent="Pares: 0 / 4";mem.innerHTML="";
+    deck.forEach(c=>{const el=document.createElement('div');el.className="mcard";el.dataset.id=c.id;el.textContent=c.txt;el.onclick=()=>flip(el);mem.appendChild(el);});
+  }
+  function flip(el){ if(lock||el.classList.contains('flip')||el.classList.contains('done'))return; el.classList.add('flip');
+    if(!first){first=el;return;} nt++;tries.textContent=nt;
+    if(first.dataset.id===el.dataset.id){first.classList.add('done');el.classList.add('done');first.classList.remove('flip');el.classList.remove('flip');first=null;found++;prog.textContent="Pares: "+found+" / 4";
+      if(found===4){prog.textContent="¡Completado! 4 / 4";markDone(MIDX);}}
+    else{lock=true;const a=first;first=null;setTimeout(()=>{a.classList.remove('flip');el.classList.remove('flip');lock=false;},700);}
+  }
+  reset.onclick=build; build();
+})();
+
+/* Videos */
+const VIDX=screens.findIndex(s=>s.dataset.gate==="videos");
+document.getElementById('vidOk').onclick=function(){ this.textContent="Confirmado ✓"; this.disabled=true; markDone(VIDX); };
+
+/* Quiz */
+const QIDX=screens.findIndex(s=>s.dataset.gate==="quiz");
+(function(){
+  const QS=[
+    {q:"El enfoque que estudia el sistema como un todo y sus relaciones es el...",o:["Reduccionista","Sistémico","Analítico puro"],c:1},
+    {q:"Descomponer un problema en partes para estudiarlas por separado es...",o:["Enfoque sistémico","Enfoque reduccionista","Emergencia"],c:1},
+    {q:"'El todo es más que la suma de sus partes' pertenece al enfoque...",o:["Sistémico","Reduccionista","Mecanicista"],c:0},
+    {q:"¿Quién es el padre de la Teoría General de Sistemas?",o:["Russell Ackoff","Ludwig von Bertalanffy","René Descartes"],c:1},
+    {q:"Para Ackoff, poner algo en su contexto para entender por qué hace lo que hace es...",o:["Análisis","Síntesis","Reducción"],c:1}
+  ];
+  let i=0,score=0;
+  const box=document.getElementById('qbox'),fl=document.getElementById('qFill'),pc=document.getElementById('qPc'),res=document.getElementById('qResult');
+  function render(){
+    if(i>=QS.length){const p=Math.round(score/QS.length*100);box.innerHTML="<p class='qbig' style='min-height:auto'>Quiz terminado</p>";
+      res.textContent=(p>=60?"¡Aprobado! ":"Puedes repasar. ")+"Puntaje: "+p+" / 100.";markDone(QIDX);return;}
+    const it=QS[i];let h="<div class='q' style='font-size:1.06rem;font-weight:500;margin-bottom:10px'>"+(i+1)+". "+it.q+"</div><div class='opts'>";
+    it.o.forEach((o,k)=>h+="<button data-k='"+k+"'>"+o+"</button>");h+="</div>";box.innerHTML=h;
+    box.querySelectorAll('button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,ok=k===it.c;
+      box.querySelectorAll('button').forEach(x=>{x.disabled=true;if(+x.dataset.k===it.c)x.classList.add('good');});
+      if(!ok)b.classList.add('bad');if(ok)score++;
+      fl.style.width=Math.round((i+1)/QS.length*100)+"%";pc.textContent=Math.round(score/QS.length*100);
+      setTimeout(()=>{i++;render();},700);});
+  }
+  render();
+})();
+
+render();
+</script>
+</body>
+</html>
